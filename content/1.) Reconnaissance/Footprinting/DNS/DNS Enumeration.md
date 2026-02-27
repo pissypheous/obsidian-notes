@@ -4,7 +4,7 @@ Tags: #dns #enumeration #footprinting #pentesting #network
 
 ---
 
-## 📌 Objective
+##  Objective
 
 Identify:
 
@@ -23,13 +23,13 @@ Identify:
 
 ---
 
-# 🧭 Phase 1 — Identify Nameservers
+#  Phase 1 — Identify Nameservers
 
-> 🎯 Goal: Find authoritative DNS servers
+>  Goal: Find authoritative DNS servers
 
 dig ns <domain> @<dns-ip>
 
-### ✔ Look For
+###  Look For
 
 - NS records
     
@@ -40,13 +40,13 @@ dig ns <domain> @<dns-ip>
 
 ---
 
-# 🧭 Phase 2 — Enumerate Public Records
+#  Phase 2 — Enumerate Public Records
 
-> 🎯 Goal: Extract visible DNS data
+>  Goal: Extract visible DNS data
 
 dig any <domain> @<dns-ip>
 
-### ✔ Analyze
+###  Analyze
 
 - **A / AAAA** → IP mapping
     
@@ -59,9 +59,9 @@ dig any <domain> @<dns-ip>
 
 ---
 
-# 🧭 Phase 3 — Attempt Zone Transfer (AXFR)
+#  Phase 3 — Attempt Zone Transfer (AXFR)
 
-> 🚨 High Value Step
+>  High Value Step
 
 dig axfr <domain> @<dns-ip>
 
@@ -69,7 +69,7 @@ Also test:
 
 dig axfr internal.<domain> @<dns-ip>
 
-### ✔ If Successful
+###  If Successful
 
 You get:
 
@@ -82,7 +82,7 @@ You get:
 - Dev / staging systems
     
 
-### 🔥 Why It Works
+###  Why It Works
 
 Misconfiguration:
 
@@ -90,13 +90,13 @@ allow-transfer any;
 
 ---
 
-# 🧭 Phase 4 — Subdomain Discovery
+#  Phase 4 — Subdomain Discovery
 
-> 🎯 Goal: Find hidden assets
+>  Goal: Find hidden assets
 
 ---
 
-### 🔹 Quick Wordlist Method
+###  Quick Wordlist Method
 
 for sub in $(cat wordlist.txt); do  
   dig $sub.<domain> @<dns-ip> +short  
@@ -104,13 +104,13 @@ done
 
 ---
 
-### 🔹 Automated
+###  Automated
 
 dnsenum --dnsserver <dns-ip> -f wordlist.txt <domain>
 
 ---
 
-### ✔ Look For
+###  Look For
 
 - dev.
     
@@ -129,9 +129,9 @@ These are often weak targets.
 
 ---
 
-# 🧭 Phase 5 — Reverse Lookup (PTR)
+#  Phase 5 — Reverse Lookup (PTR)
 
-> 🎯 Map IP → Hostname
+>  Map IP → Hostname
 
 dig -x <ip>
 
@@ -139,13 +139,13 @@ Useful after discovering IP ranges.
 
 ---
 
-# 🧭 Phase 6 — DNS Version Fingerprinting
+#  Phase 6 — DNS Version Fingerprinting
 
-> 🎯 Identify DNS software
+>  Identify DNS software
 
 dig CH TXT version.bind @<dns-ip>
 
-### ✔ Why
+###  Why
 
 - Identify BIND / Windows DNS
     
@@ -156,7 +156,7 @@ dig CH TXT version.bind @<dns-ip>
 
 ---
 
-# 🧩 Record Quick Reference
+#  Record Quick Reference
 
 |Record|Meaning|Why It Matters|
 |---|---|---|
@@ -172,7 +172,7 @@ dig CH TXT version.bind @<dns-ip>
 
 ---
 
-# 🚨 Misconfigurations to Check
+#  Misconfigurations to Check
 
 - `allow-transfer any;`
     
@@ -185,7 +185,7 @@ dig CH TXT version.bind @<dns-ip>
 
 ---
 
-# 🛠 Tools
+#  Tools
 
 - `dig` → Manual queries
     
@@ -200,7 +200,7 @@ dig CH TXT version.bind @<dns-ip>
 
 ---
 
-# 📝 Engagement Logging Template
+#  Engagement Logging Template
 
 ## DNS Findings  
   

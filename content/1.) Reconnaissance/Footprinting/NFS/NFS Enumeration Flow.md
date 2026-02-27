@@ -1,132 +1,166 @@
-# Enumeration Phase — Quick Checklist
-
-Goal: Identify attack surface → find entry point → exploit
-
-Rule: Enumerate → Think → Enumerate again
-
----
-
-# 1️⃣ Network Discovery (Always First)
+# Network Discovery (Always First)
 
 ## Full TCP Scan
+
 nmap -Pn -p- --open -T4 <IP>
 
-## Service + Version
+## Service + Version Detection
+
 nmap -sV -sC -O -p <ports> <IP>
 
-## Optional
-nmap -A -T4 <IP>
+## Optional Scans
+
+nmap -A -T4 <IP>  
 nmap -sU --top-ports 100 <IP>
 
-→ Identify:
+### Identify Services
+
 - Web
+    
 - SMB
+    
 - SSH
+    
 - FTP
-- DB
+    
+- Database
+    
 - SNMP
+    
 - DNS
+    
 
 ---
 
-# 2️⃣ Web Enumeration (If HTTP/HTTPS)
+# 2. Web Enumeration (If HTTP/HTTPS)
 
-## Directories
+## Directory Brute Force
+
 gobuster dir -u http://target -w /usr/share/wordlists/dirb/common.txt -x php,txt,html
 
-## Subdomains
+## Subdomain Brute Force
+
 gobuster dns -d domain.com -w subdomains.txt
 
-## Fingerprint
-whatweb http://target
+## Fingerprinting
+
+whatweb http://target  
 nikto -h http://target
 
-## Manual
-- robots.txt
-- sitemap.xml
-- login pages
-- backups
-- .git / .env
+## Manual Checks
 
-## CMS
-wpscan
+- robots.txt
+    
+- sitemap.xml
+    
+- Login pages
+    
+- Backup files
+    
+- `.git`
+    
+- `.env`
+    
+
+## CMS Enumeration
+
+wpscan  
 joomscan
 
 ---
 
-# 3️⃣ SMB Enumeration (If 139/445)
+# 3. SMB Enumeration (If Ports 139/445 Open)
 
-smbclient -L //target -N
-smbmap -H target
-enum4linux -a target
+smbclient -L //target -N  
+smbmap -H target  
+enum4linux -a target  
 rpcclient -U "" -N target
 
-Look for:
+### Look For
+
 - Anonymous access
+    
 - Credentials
+    
 - Scripts
+    
 - Config files
+    
 
 ---
 
-# 4️⃣ SNMP (If 161)
+# 4. SNMP Enumeration (If Port 161 Open)
 
 snmpwalk -v2c -c public <IP>
 
-Try:
-public / private / manager
+### Try Community Strings
+
+- public
+    
+- private
+    
+- manager
+    
 
 ---
 
-# 5️⃣ DNS (If 53)
+# 5. DNS Enumeration (If Port 53 Open)
 
-dig axfr @<IP> domain.com
+dig axfr @<IP> domain.com  
 dig +short ANY domain.com
 
 ---
 
-# 6️⃣ Local Enumeration (After Foothold)
+# 6. Local Enumeration (After Foothold)
 
-## System
-whoami
-id
-hostname
-ip a
-uname -a
+## System Information
+
+whoami  
+id  
+hostname  
+ip a  
+uname -a  
 cat /etc/os-release
 
 ## Users
+
 cat /etc/passwd | grep bash
 
-## Priv Esc
-sudo -l
-find / -perm -u=s -type f 2>/dev/null
-ls -la /etc/cron*
+## Privilege Escalation Checks
+
+sudo -l  
+find / -perm -u=s -type f 2>/dev/null  
+ls -la /etc/cron*  
 crontab -l
 
-## Processes / Ports
-ps aux
-netstat -tuln
+## Processes and Open Ports
+
+ps aux  
+netstat -tuln  
 ss -tuln
 
 ---
 
-# 7️⃣ Quick File Hunting
+# 7. Quick File Hunting
 
-ls -la /home/*
-ls -la /var/www/*
+ls -la /home/*  
+ls -la /var/www/*  
 ls -la /tmp/*
 
 ---
 
-# 8️⃣ Methodology Loop 🧠
+# 8. Methodology Loop
 
-Scan → Enum Service → Exploit → Enum Again
+Scan → Enumerate service → Exploit → Enumerate again
 
 If stuck:
-→ Try another service
-→ Re-scan
-→ Manual testing
+
+- Try another service
+    
+- Re-scan
+    
+- Perform manual testing
+    
 
 Never assume.
 
@@ -134,17 +168,18 @@ Never assume.
 
 # Notes
 
-Create host note:
+## Create Host Note
+
 [[Host-10.10.10.10]]
 
-Tag findings:
+## Tag Findings
+
 #creds #rce #lfi #privesc #misconfig #lowhanging
 
-Document:
-- Commands
+## Document Everything
+
+- Commands used
+    
 - Output
+    
 - Screenshots
-
----
-
-Last Updated: {{date}}
